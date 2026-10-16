@@ -1,0 +1,29 @@
+{
+  "experiment": "paper",
+  "ollama_version": "0.32.1",
+  "models": [
+    "qwen2.5:3b",
+    "gemma2:2b",
+    "gemma2:9b",
+    "gemma3:4b"
+  ],
+  "cohorts": [
+    "original"
+  ],
+  "repair_policy": "validation_guided",
+  "shared_initial": false,
+  "settings": {
+    "num_ctx": 4096,
+    "temperature": null,
+    "top_p": null,
+    "top_k": null,
+    "seed": null,
+    "timeout": 120,
+    "inactivity_timeout": 120,
+    "keep_alive": -1,
+    "stream": false,
+    "request_gap_seconds": 0
+  },
+  "model_identity": null,
+  "model_identity_note": "Historical model digests were not captured; a fresh run records the models actually used."
+}

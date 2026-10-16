@@ -1,0 +1,29 @@
+{
+  "experiment": "extended",
+  "ollama_version": "0.34.0",
+  "models": [
+    "gemma2:2b",
+    "qwen2.5:3b",
+    "gemma3:4b",
+    "gemma2:9b"
+  ],
+  "cohorts": [
+    "original",
+    "supplemental"
+  ],
+  "repair_policy": "grounded",
+  "shared_initial": true,
+  "settings": {
+    "temperature": 0.0,
+    "seed": 20261008,
+    "num_ctx": 4096,
+    "num_thread": 4,
+    "timeout": 420,
+    "inactivity_timeout": 120,
+    "keep_alive": 300,
+    "request_gap_seconds": 0.1,
+    "stream": true,
+    "num_predict": "model-default-unmodified"
+  },
+  "model_identity": "configs/models.json"
+}

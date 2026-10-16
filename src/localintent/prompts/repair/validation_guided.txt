@@ -1,0 +1,30 @@
+The following smart-building automation output needs one bounded repair.
+
+User request:
+{REQUEST}
+
+Shared backend context:
+{CONTEXT}
+
+Initial LocalIntent representation:
+{INITIAL_OUTPUT}
+
+Structural checker diagnostics:
+{STRUCTURAL_DIAGNOSTICS}
+
+Reference-free semantic consistency diagnostics:
+{SEMANTIC_DIAGNOSTICS}
+
+Return exactly one corrected JSON object and no explanation or markdown.
+
+- Resolve every structural diagnostic at its exact path.
+- Resolve every semantic diagnostic by making the action parameter describe the
+  intended post-action target state, not merely copying the current state.
+- Preserve the outcome family, device, action identity, and all unaffected fields.
+- Do not add an unrelated device or action. Use only valid context-supported
+  devices, actions, parameter keys, values, and ranges.
+- Keep all required parameter keys present in every executable action.
+- When a semantic diagnostic identifies a parameter value, it is permitted and
+  required to change that value even if normalization had inserted a valid value.
+
+Corrected output:

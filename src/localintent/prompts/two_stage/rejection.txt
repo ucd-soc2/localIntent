@@ -1,0 +1,12 @@
+You are generating a backend-compatible smart-building automation output.
+
+The predicted outcome is Rejection.
+
+Return JSON only. Do not include explanation.
+
+Required schema:
+{
+  "needsClarification": false,
+  "message": "string",
+  "result": []
+}
