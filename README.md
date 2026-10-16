@@ -50,11 +50,7 @@ The pooled analysis is not an additional model run. The original 155 requests co
 
 The methods are **Monolithic**, **TwoStageGeneric**, **LocalIntent**, and **LocalIntent+SemanticRepair**. The last method uses the repair policy selected by the experiment configuration. The paper repair condition has its own generated initial outputs; the extended repair condition reuses the corresponding LocalIntent initial output within the same run. Paired repair statistics always compare the initial and final outputs of the repair condition.
 
-The paper's 619 scored repair pairs contain 30 APC improvements and 3 regressions, for a net gain of 27. The extended experiments contain 1,340 scored pairs with 163 improvements and no observed APC regressions. These are controlled benchmark observations, not held-out generalisation estimates. See [limitations](docs/limitations.md).
-
 The reproduction data consists of two input datasets and three compact result files. Inputs and references are stored once per request. Result files retain the model outputs, expected scores, repair evidence and measured timings required for offline reproduction; repeated prompts are represented by hashes and rebuilt from the code. Historical outputs and timings are needed because fresh model execution may produce different results. See the [result format](results/README.md).
-
-**Known paper discrepancy:** Section 5.4 reports 511 validator-passing LocalIntent outputs, of which 277 fail at least one metric. The supplied individual records and their aggregate table give **510 and 282**, respectively. The repository preserves those records and documents the discrepancy in [paper correspondence](docs/artifact_coverage.md); it does not alter outputs to match the prose.
 
 ## Repository layout
 
@@ -112,6 +108,6 @@ The [reproduction guide](docs/reproduction.md) covers the paper runtime, model-i
 
 Please cite the paper when using the implementation, datasets or results:
 
-> Tianyang Liu, Jiayue Wang, Zhanhao Cheng, Changyang Wang, Shaoshu Zhu, Zhenghao Wu, and Hadi Tabatabaee Malazi. *LocalIntent: Outcome-Specific Structured Generation for Backend-Compatible Smart Building Automation with Local LLMs.* GPC, 2026.
+> Tianyang Liu, Jiayue Wang, Zhanhao Cheng, Changyang Wang, Shaoshu Zhu, Zhenghao Wu, and Hadi Tabatabaee Malazi. *LocalIntent: Outcome-Specific Structured Generation for Backend-Compatible Smart Building Automation with Local LLMs.* In Green, Pervasive, and Cloud Computing: 21st International Conference, GPC 2026.
 
-Machine-readable citation metadata is provided in [CITATION.cff](CITATION.cff). The code and accompanying repository documentation are licensed under the [MIT License](LICENSE). Model weights are obtained separately and retain their respective upstream licenses; the included paper retains its publication rights.
+The code and accompanying repository documentation are licensed under the [MIT License](LICENSE). Model weights are obtained separately and retain their respective upstream licenses; the included paper retains its publication rights.
