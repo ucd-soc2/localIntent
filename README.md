@@ -4,7 +4,7 @@
 
 LocalIntent translates a natural-language request and a local state snapshot into an immediate command, a persistent automation rule, a clarification, or a rejection. It combines ordinary/rule routing, branch-specific generation, deterministic validation, and an optional repair policy.
 
-This repository contains the implementation, prompts, datasets, saved model outputs, diagnostic scores, and analysis tools for the [paper](paper/localintent.pdf), together with the additional experiments on an expanded dataset. The paper experiment and the extended experiments have separate configurations and results because they use different generation settings and repair policies.
+This repository contains the implementation, prompts, datasets, saved model outputs, diagnostic scores, and analysis tools for the [paper](https://arxiv.org/abs/2610.23511), together with the additional experiments on an expanded dataset. The paper experiment and the extended experiments have separate configurations and results because they use different generation settings and repair policies.
 
 [Reproduction guide](docs/reproduction.md) · [Method](docs/method.md) · [Evaluation](docs/evaluation.md) · [Results](results/README.md) · [Paper correspondence](docs/artifact_coverage.md)
 
@@ -108,6 +108,20 @@ The [reproduction guide](docs/reproduction.md) covers the paper runtime, model-i
 
 Please cite the paper when using the implementation, datasets or results:
 
-> Tianyang Liu, Jiayue Wang, Zhanhao Cheng, Changyang Wang, Shaoshu Zhu, Zhenghao Wu, and Hadi Tabatabaee Malazi. *LocalIntent: Outcome-Specific Structured Generation for Backend-Compatible Smart Building Automation with Local LLMs.* In Green, Pervasive, and Cloud Computing: 21st International Conference, GPC 2026.
+> Tianyang Liu, Jiayue Wang, Zhanhao Cheng, Changyang Wang, Shaoshu Zhu, Zhenghao Wu, and Hadi Tabatabaee Malazi. *LocalIntent: Outcome-Specific Structured Generation for Backend-Compatible Smart Building Automation with Local LLMs.* arXiv preprint arXiv:2610.23511, 2026. https://arxiv.org/abs/2610.23511
+
+Recommended BibTeX citation:
+
+```bibtex
+@misc{liu2026localintent,
+  title         = {{LocalIntent}: Outcome-Specific Structured Generation for Backend-Compatible Smart Building Automation with Local {LLMs}},
+  author        = {Liu, Tianyang and Wang, Jiayue and Cheng, Zhanhao and Wang, Changyang and Zhu, Shaoshu and Wu, Zhenghao and Tabatabaee Malazi, Hadi},
+  year          = {2026},
+  eprint        = {2610.23511},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.AI},
+  url           = {https://arxiv.org/abs/2610.23511}
+}
+```
 
 The code and accompanying repository documentation are licensed under the [MIT License](LICENSE). Model weights are obtained separately and retain their respective upstream licenses; the included paper retains its publication rights.
