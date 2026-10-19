@@ -1,6 +1,6 @@
 # Paper correspondence
 
-The included camera-ready paper is [paper/localintent.pdf](../paper/localintent.pdf). Its principal experiment uses the original 155 requests and four models. The paper result records were recovered from the supplied paper experiment archive; their main JSONL source hash matches the source identified by the later comparison material.
+The paper is available online at [arXiv:2610.23511](https://arxiv.org/abs/2610.23511). Its principal experiment uses the original 155 requests and four models. The paper result records were recovered from the supplied paper experiment archive; their main JSONL source hash matches the source identified by the later comparison material.
 
 | Paper component | Public artifact |
 | --- | --- |

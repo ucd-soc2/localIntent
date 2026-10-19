@@ -1,6 +1,6 @@
 # Artifact provenance
 
-`sources.json` identifies the supplied paper archive, paper, datasets, original result exports, method modules and prompt files by SHA256. `checksums.json` covers the repository's source, configurations, datasets, compact result files, paper and documentation.
+`sources.json` identifies the supplied paper archive, datasets, original result exports, method modules and prompt files by SHA256. `checksums.json` covers the repository's source, configurations, datasets, compact result files and documentation.
 
 The two dataset files preserve the instructions, states, timestamps, references and record order. Stable `original-NNN` and `supplemental-NNN` identifiers join them to the result records. Input object order is preserved because prompt serialization depends on it.
 

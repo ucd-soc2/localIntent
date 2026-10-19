@@ -64,7 +64,6 @@ configs/              Paper/extended settings and locked model metadata
 data/                 Original and supplemental datasets
 results/              Three compact files of saved evaluations
 docs/                 Method, evaluation, reproduction and limitations
-paper/                Camera-ready paper
 provenance/           Source hashes and release checksums
 tests/                Offline regression and recovery tests
 reproduce.py          Repository command-line entry point
@@ -124,4 +123,4 @@ Recommended BibTeX citation:
 }
 ```
 
-The code and accompanying repository documentation are licensed under the [MIT License](LICENSE). Model weights are obtained separately and retain their respective upstream licenses; the included paper retains its publication rights.
+The code and accompanying repository documentation are licensed under the [MIT License](LICENSE). Model weights are obtained separately and retain their respective upstream licenses.

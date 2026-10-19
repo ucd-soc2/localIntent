@@ -39,9 +39,6 @@
     "paper_archive": {
       "sha256": "a74aaf98f90a381fd8f8f5871ccf86dfb42343f2f7b8c8304b105f06c642dd78"
     },
-    "paper_pdf": {
-      "sha256": "5447065e85706da8f26cbc6ff1679409070a237e1b97bc0aaa59a7b40c468dec"
-    },
     "frozen_core_archive": {
       "sha256": "a195f0d543de0c2eeccf83f355e70c3e03120ee78d64879ad9259281b9737f98"
     }
