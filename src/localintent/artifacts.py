@@ -45,66 +45,24 @@ def read_jsonl(path: Path) -> list[dict]:
 
 
 def dataset(root: Path, cohort: str) -> list[dict]:
-    if cohort == "pooled":
-        return dataset(root, "original") + dataset(root, "supplemental")
-    if cohort not in ("original", "supplemental"):
+    if cohort != "original":
         raise ValueError(f"Unknown cohort: {cohort}")
-    return read_jsonl(root / "data" / f"{cohort}.jsonl")
+    return read_jsonl(root / "data/original.jsonl")
 
 
 def records(root: Path, experiment: str, cohort: str = "original") -> list[dict]:
-    if experiment == "paper":
-        if cohort != "original":
-            raise ValueError("The paper experiment uses only the original cohort.")
-        path = root / "results/paper/records.jsonl.gz"
-    elif experiment != "extended":
-        raise ValueError(f"Unknown experiment: {experiment}")
-    elif cohort == "pooled":
-        return records(root, experiment, "original") + records(
-            root, experiment, "supplemental"
-        )
-    elif cohort not in ("original", "supplemental"):
-        raise ValueError(f"Unknown cohort: {cohort}")
-    else:
-        path = root / f"results/extended/{cohort}/records.jsonl.gz"
-    rows = read_jsonl(path)
+    if experiment != "paper" or cohort != "original":
+        raise ValueError("Only the paper experiment and original cohort are available.")
+    rows = read_jsonl(root / "results/paper/records.jsonl.gz")
     samples = {sample["id"]: sample for sample in dataset(root, cohort)}
     for row in rows:
         sample = samples[row["id"]]
         row.update(
-            experiment=experiment,
-            cohort=cohort,
-            input=sample["input"],
-            reference=sample["reference"],
+            experiment=experiment, cohort=cohort,
+            input=sample["input"], reference=sample["reference"],
             outcome=sample["outcome"],
             timing_seconds={"end_to_end": row["elapsed_seconds"]},
         )
-        if experiment == "extended":
-            row["model_calls"] = [
-                {"stage": call["stage"], "elapsed_time_sec": call["elapsed"]}
-                for call in row["transport"]
-                if "stage" in call
-            ]
-            for call in row["transport"]:
-                call["metadata"] = {"elapsed_time_sec": call["elapsed"]}
-                call["reused_within_run"] = False
-    if experiment == "extended":
-        initials = {
-            (row["model"], row["id"]): row
-            for row in rows
-            if row["method"] == "localintent"
-        }
-        for row in rows:
-            if row["method"] == "semantic_repair":
-                initial = initials[row["model"], row["id"]]
-                row["initial"] = initial["final"]
-                row["route_mode"] = initial["route_mode"]
-                row["model_calls"] = initial["model_calls"]
-                row["timing_seconds"] = {
-                    "initial": initial["elapsed_seconds"],
-                    "repair": row["elapsed_seconds"],
-                    "end_to_end": initial["elapsed_seconds"] + row["elapsed_seconds"],
-                }
     return rows
 
 

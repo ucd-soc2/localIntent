@@ -48,11 +48,6 @@
       "source_sha256": "3342fd9f633faeab74a81c3f35ae08476f7a98df86c77b7cf98dfeb71497c6de",
       "records": 155,
       "normalization": "Stable sample IDs; inputs, references and order preserved."
-    },
-    "supplemental": {
-      "source_sha256": "8b14c6d8391fa1abd1f4b1920bb11f941f774005c117bd174f9c4057c308638b",
-      "records": 180,
-      "normalization": "Stable sample IDs; inputs, references and order preserved."
     }
   },
   "results": {
@@ -69,14 +64,6 @@
         "paper_monolithic_07",
         "paper_monolithic_08"
       ]
-    },
-    "extended_original": {
-      "source_sha256": "fb7754445f639a2065dced0053d084208c1632b403a3c08499f1378af73e5990",
-      "records": 2480
-    },
-    "extended_supplemental": {
-      "source_sha256": "35a55bfe77dad585086fac91dc3b7a304351b70c6efc4add5a99e44dc8c155f3",
-      "records": 2880
     }
   },
   "prompts": {
@@ -95,8 +82,6 @@
     "monolithic": "8a347d911ddcb162f7c48eea227d19234054161253cb89f37c3c7ef9f2fa7e6c",
     "validation_guided_checks": "2371e5f0624a97b51e9dc781a9b6448f1aea1da6f5def3d96f8d91df76023ada",
     "validation_guided_execution": "7b892e88101e8fa2af4c5d9e3da829f7d9fe4542a4cee12657d25c93763b9201",
-    "grounded_completeness": "12ac6ef159de8e977a13a270ef23d5ba4969c05ee53e70a6ddc4749e4fda9e65",
-    "grounded_parameters": "a822d11517364709b5cb7315355f31207fb44be5f90bd757720968cef68bc9e7",
     "routing_and_scoring": "af681777cb23df5d062798d6dbd61df117bf5567030b6a103230d11e453ce5e5",
     "schema_and_normalization": "4430d5be4de2a93ccaec589b6fc5b81b51dd9cf23d2a3558031b057a56e610ed"
   }

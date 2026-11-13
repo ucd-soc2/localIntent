@@ -16,16 +16,11 @@ def selections(experiment, cohort):
         if experiment == "paper" and cohort not in ("all", "original"):
             raise ValueError("The paper experiment uses the original cohort")
         yield "paper", "original"
-    if experiment in ("all", "extended"):
-        for value in (
-            ("original", "supplemental", "pooled") if cohort == "all" else (cohort,)
-        ):
-            yield "extended", value
 
 
 def main(argv=None):
     parser = argparse.ArgumentParser(
-        description="LocalIntent: paper and extended experiment reproduction"
+        description="LocalIntent: paper experiment reproduction"
     )
     parser.add_argument(
         "--root", type=Path, help="Repository containing data, configs and results"
@@ -39,23 +34,20 @@ def main(argv=None):
     for command in ("analyze", "plot"):
         sub = commands.add_parser(command)
         sub.add_argument(
-            "--experiment", choices=("all", "paper", "extended"), default="all"
+            "--experiment", choices=("all", "paper"), default="all"
         )
         sub.add_argument(
             "--cohort",
-            choices=("all", "original", "supplemental", "pooled"),
+            choices=("all", "original"),
             default="all",
         )
         sub.add_argument(
             "--records", type=Path, help="Analyze a fresh run's records.jsonl instead"
         )
         sub.add_argument("--output", type=Path)
-    for command in ("download-models", "verify-models", "list-models"):
-        sub = commands.add_parser(command)
-        sub.add_argument("--model-dir", type=Path)
     check = commands.add_parser("check-api")
     check.add_argument(
-        "--experiment", choices=("paper", "extended"), default="extended"
+        "--experiment", choices=("paper",), default="paper"
     )
     check.add_argument("--api", default="http://127.0.0.1:11439")
     serve = commands.add_parser("serve")
@@ -63,10 +55,10 @@ def main(argv=None):
     serve.add_argument("--model-dir", type=Path)
     run_parser = commands.add_parser("run")
     run_parser.add_argument(
-        "--experiment", choices=("paper", "extended"), required=True
+        "--experiment", choices=("paper",), required=True
     )
     run_parser.add_argument(
-        "--cohort", choices=("original", "supplemental"), default="original"
+        "--cohort", choices=("original",), default="original"
     )
     run_parser.add_argument("--models", nargs="+")
     run_parser.add_argument("--limit", type=int)
@@ -117,21 +109,6 @@ def main(argv=None):
                     "output": str(path),
                 }
             )
-    elif args.command in ("download-models", "verify-models", "list-models"):
-        from . import models
-
-        models.configure(root, args.model_dir)
-        if args.command == "download-models":
-            models.download_models()
-        elif args.command == "verify-models":
-            models.verify_models()
-        else:
-            print(
-                json.dumps(
-                    {k: v["digest"] for k, v in models.metadata().items()}, indent=2
-                )
-            )
-        return
     elif args.command == "serve":
         import socket
 
@@ -151,12 +128,7 @@ def main(argv=None):
         from .inference import inspect_models
 
         config = json.loads((root / f"configs/{args.experiment}.json").read_text())
-        locked = (
-            json.loads((root / "configs/models.json").read_text())
-            if args.experiment == "extended"
-            else None
-        )
-        result = inspect_models(args.api, config, locked)
+        result = inspect_models(args.api, config, None)
     else:
         from .experiments.runner import make_plan, run
 

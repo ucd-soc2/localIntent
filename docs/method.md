@@ -18,13 +18,11 @@ The validator parses JSON, checks raw parameter completeness, normalizes outputs
 
 The six reference-based scores are calculated outside generation and repair. Dataset references are never supplied to a repair policy or included in a generated prompt.
 
-## Repair policies
+## Repair policy
 
 The **validation-guided** policy used by the paper combines structural diagnostics with explicit request/output semantic checks. It permits at most one additional model call. A candidate must pass the validator and the outcome/action-identity acceptance rules. A rejected candidate leaves the initial output selected for paired scoring. The paper repair condition generates its own initial response; it is not paired with the separately generated LocalIntent arm.
 
-The **grounded** policy used by the extended experiments derives parameter changes from the request and state, protects unrelated fields, and checks command-family and action completeness. It can make deterministic edits and invokes a model at most once when necessary. All required actions must be supported by the input; the reference answer is not consulted. In these experiments the repair policy consumes the exact initial output from the LocalIntent arm.
-
-`repair/parameters.py` implements grounded parameter operations and minimal-change acceptance. `repair/grounded.py` adds action-inventory and command-family checks. `repair/validation_guided.py` implements the paper policy. Diagnostic identifiers used inside frozen prompts remain part of the method's input contract.
+`repair/validation_guided.py` implements the paper policy. Diagnostic identifiers used inside frozen prompts remain part of the method's input contract.
 
 ## Execution
 

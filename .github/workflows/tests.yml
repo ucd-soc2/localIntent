@@ -12,4 +12,3 @@ jobs:
       - run: python reproduce.py verify
       - run: python reproduce.py analyze
       - run: python reproduce.py run --experiment paper --dry-run
-      - run: python reproduce.py run --experiment extended --cohort supplemental --dry-run

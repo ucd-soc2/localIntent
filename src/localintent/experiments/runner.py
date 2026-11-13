@@ -1,4 +1,4 @@
-"""Serial experiment execution with separate paper and extended designs."""
+"""Serial execution of the paper experiment."""
 
 from __future__ import annotations
 
@@ -15,14 +15,16 @@ from ..artifacts import METHODS, dataset, sha256, write_json
 from ..evaluation.aggregate import export
 from ..evaluation.metrics import score_output
 from ..inference import Transport, api, inspect_models, prepare_model
-from ..repair import grounded, validation_guided
+from ..repair import validation_guided
 from .checkpoints import IntegrityError, digest, load, seal, write
 
 
 def make_plan(
     root, experiment, cohort, models=None, limit=None, api_base="http://127.0.0.1:11439"
 ):
-    config = json.loads((root / f"configs/{experiment}.json").read_text())
+    if experiment != "paper":
+        raise ValueError("Only the paper experiment is available")
+    config = json.loads((root / "configs/paper.json").read_text())
     if experiment == "paper" and cohort != "original":
         raise ValueError("The paper design uses only the original cohort")
     data = dataset(root, cohort)
@@ -73,30 +75,6 @@ def execute_one(record, method, model, config, transport, initial_row=None):
                 settings["timeout"],
             )
             calls = local["ollama_calls"]
-        elif config["shared_initial"]:
-            if initial_row is None:
-                raise IntegrityError(
-                    "Grounded repair requires a completed shared initial"
-                )
-            initial = copy.deepcopy(initial_row["final"])
-            local = copy.deepcopy(initial_row["details"]["local"])
-            state = record["input"]
-            repair = grounded.repair_initial(
-                state["userInstruction"],
-                state["current_state"],
-                state["timestamp"],
-                initial,
-                candidate_generator=lambda prompt: transport(
-                    model, prompt, url, settings["timeout"]
-                )[0],
-                route_mode=local["route_mode"],
-            )
-            final, candidate = repair["final"], repair["candidate"]
-            calls = local["ollama_calls"]
-            initial_raw = initial_row.get("raw_output")
-            candidate_raw = (
-                transport.observed[-1]["raw"] if transport.observed else None
-            )
         else:
             result = validation_guided.execute(
                 {"input": copy.deepcopy(record["input"])},
@@ -142,12 +120,6 @@ def execute_one(record, method, model, config, transport, initial_row=None):
             + sum(c["elapsed"] for c in transport.observed if c["reused_within_run"])
         )
         timing = {"end_to_end": elapsed}
-        if method == "semantic_repair" and config["shared_initial"]:
-            timing = {
-                "initial": initial_row["timing_seconds"]["end_to_end"],
-                "repair": elapsed,
-                "end_to_end": initial_row["timing_seconds"]["end_to_end"] + elapsed,
-            }
         return {
             "experiment": config["experiment"],
             "cohort": record["id"].split("-")[0],
@@ -208,11 +180,7 @@ def run(root, destination, plan, data, max_new=None):
                     "Run inputs, sources or configuration changed; use a new output directory"
                 )
         else:
-            pinned = (
-                json.loads((root / "configs/models.json").read_text())
-                if plan["experiment"] == "extended"
-                else None
-            )
+            pinned = None
             observed = inspect_models(plan["api_base"], plan["config"], pinned)
             manifest = {
                 "plan": plan,

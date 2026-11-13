@@ -4,7 +4,7 @@
 
 LocalIntent translates a natural-language request and a local state snapshot into an immediate command, a persistent automation rule, a clarification, or a rejection. It combines ordinary/rule routing, branch-specific generation, deterministic validation, and an optional repair policy.
 
-This repository contains the implementation, prompts, datasets, saved model outputs, diagnostic scores, and analysis tools for the [paper](https://arxiv.org/abs/2610.23511), together with the additional experiments on an expanded dataset. The paper experiment and the extended experiments have separate configurations and results because they use different generation settings and repair policies.
+This repository contains the implementation, prompts, datasets, saved model outputs, diagnostic scores, and analysis tools for the [paper](https://arxiv.org/abs/2610.23511).
 
 [Reproduction guide](docs/reproduction.md) · [Method](docs/method.md) · [Evaluation](docs/evaluation.md) · [Results](results/README.md) · [Paper correspondence](docs/artifact_coverage.md)
 
@@ -20,11 +20,11 @@ python reproduce.py analyze
 python -m unittest discover -s tests -v
 ```
 
-`verify` checks the published artifact hashes, recomputes all 7,840 saved evaluations, and checks 1,960 repair decisions using the recorded responses. It also checks the shared initial outputs in the extended experiments. Its report is saved to `build/verification.json`.
+`verify` checks the published artifact hashes, recomputes all 2,480 saved evaluations, and checks 620 repair decisions using the recorded responses. Its report is saved to `build/verification.json`.
 
 `analyze` produces metrics, paired repair statistics, mean/median/P95 latency, and stage-level timing under `build/results/`. These commands do not contact a model service or overwrite the published results.
 
-The regression suite additionally replays all 5,360 extended evaluations through the execution pipeline using the saved model responses. It checks reconstructed prompts against their recorded SHA256 hashes, final validation, scores, and interrupted-run continuation without generating new responses.
+The regression suite checks paper repair execution, reference isolation, checkpoint integrity, and interrupted-run continuation without generating new model responses.
 
 To regenerate the figures:
 
@@ -42,27 +42,24 @@ You can optionally install the CLI with `python -m pip install -e .`; `localinte
 | Experiment | Requests | Evaluations | Scored evaluations | Repair policy |
 | --- | ---: | ---: | ---: | --- |
 | Paper | Original 155 | 2,480 | 2,479 | Validation-guided repair |
-| Extended, original cohort | Original 155 | 2,480 | 2,478 | Grounded repair |
-| Extended, supplemental cohort | Additional 180 | 2,880 | 2,880 | Grounded repair |
-| Extended, pooled analysis | Combined 335 | 5,360 | 5,358 | Aggregation of the two extended cohorts |
 
-The pooled analysis is not an additional model run. The original 155 requests comprise 54 commands, 54 rules, 31 clarifications and 16 rejections. The additional 180 requests comprise 63 commands, 63 rules, 36 clarifications and 18 rejections. All four methods are evaluated with `qwen2.5:3b`, `gemma2:2b`, `gemma3:4b`, and `gemma2:9b`.
+The 155 requests comprise 54 commands, 54 rules, 31 clarifications and 16 rejections. All four methods are evaluated with `qwen2.5:3b`, `gemma2:2b`, `gemma3:4b`, and `gemma2:9b`.
 
-The methods are **Monolithic**, **TwoStageGeneric**, **LocalIntent**, and **LocalIntent+SemanticRepair**. The last method uses the repair policy selected by the experiment configuration. The paper repair condition has its own generated initial outputs; the extended repair condition reuses the corresponding LocalIntent initial output within the same run. Paired repair statistics always compare the initial and final outputs of the repair condition.
+The methods are **Monolithic**, **TwoStageGeneric**, **LocalIntent**, and **LocalIntent+SemanticRepair**. The repair condition uses validation-guided repair and generates its own initial outputs. Paired repair statistics compare the initial and final outputs of the repair condition.
 
-The reproduction data consists of two input datasets and three compact result files. Inputs and references are stored once per request. Result files retain the model outputs, expected scores, repair evidence and measured timings required for offline reproduction; repeated prompts are represented by hashes and rebuilt from the code. Historical outputs and timings are needed because fresh model execution may produce different results. See the [result format](results/README.md).
+The reproduction data consists of one input dataset and one compact result file. Inputs and references are stored once per request. Results retain model outputs, expected scores, repair evidence and measured timings for offline reproduction. See the [result format](results/README.md).
 
 ## Repository layout
 
 ```text
 src/localintent/       Generation, normalization, validation and CLI
   prompts/            Prompts grouped by method and role
-  repair/             Validation-guided and grounded repair policies
+  repair/             Validation-guided repair policy
   evaluation/         Scoring, aggregation and offline verification
   experiments/        Serial execution and durable checkpoints
-configs/              Paper/extended settings and locked model metadata
-data/                 Original and supplemental datasets
-results/              Three compact files of saved evaluations
+configs/              Paper experiment settings
+data/                 Paper dataset
+results/              Compact file of saved paper evaluations
 docs/                 Method, evaluation, reproduction and limitations
 provenance/           Source hashes and release checksums
 tests/                Offline regression and recovery tests
@@ -73,30 +70,25 @@ New model runs go under `runs/`; locally regenerated analyses and figures go und
 
 ## Generate new model responses
 
-The original hardware was an Apple M4 MacBook Air with 16 GB unified memory. The paper used **Ollama 0.32.1**, whereas the extended experiments used **Ollama 0.34.0**. Install the version required by the experiment. Run one model and one request at a time. The supplied runtime interface and file locking target macOS/Linux; Windows has not been validated.
+The original hardware was an Apple M4 MacBook Air with 16 GB unified memory. The paper used **Ollama 0.32.1**. Run one model and one request at a time. The supplied runtime interface and file locking target macOS/Linux; Windows has not been validated.
 
-Inspect the plans without connecting to Ollama:
+Inspect the plan without connecting to Ollama:
 
 ```sh
 python reproduce.py run --experiment paper --dry-run
-python reproduce.py run --experiment extended --cohort original --dry-run
-python reproduce.py run --experiment extended --cohort supplemental --dry-run
 ```
 
-For the extended experiments, download the hash-addressed model snapshots and start the installed Ollama 0.34.0 executable:
+Start Ollama 0.32.1 with a model directory containing the four named models:
 
 ```sh
-python reproduce.py download-models
-python reproduce.py verify-models
-python reproduce.py serve
+python reproduce.py serve --ollama /path/to/ollama --model-dir /path/to/paper-models
 ```
 
-The server uses `.models/` and listens on `127.0.0.1:11439`. Keep that terminal open. In another terminal:
+The server listens on `127.0.0.1:11439`. Keep that terminal open. In another terminal:
 
 ```sh
-python reproduce.py check-api --experiment extended
-python reproduce.py run --experiment extended --cohort supplemental
-python reproduce.py run --experiment extended --cohort original
+python reproduce.py check-api --experiment paper
+python reproduce.py run --experiment paper
 ```
 
 Repeat the same command to resume an interrupted run. Completed responses and evaluations are checked before reuse; invalid model outputs are retained, while transport failures are retried a bounded number of times. A changed input, prompt, source file, model or configuration requires a new run directory. On macOS, prefix a long run with `caffeinate -i` to prevent idle sleep.

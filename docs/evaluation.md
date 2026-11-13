@@ -15,7 +15,7 @@ APC tolerances are ±1 for temperature, brightness, level and channel, and ±5 f
 
 ## Missing scores and denominators
 
-The paper records contain one missing score for Gemma2:2b / SemanticRepair / `original-023`. The extended original cohort contains two missing scores for Gemma2:9b / TwoStageGeneric; the supplemental cohort has none. Missing scores are preserved as `null` and excluded from available-case metric denominators, exactly as in the supplied exports. Their locations are included in the generated `summary.json` files.
+The paper records contain one missing score for Gemma2:2b / SemanticRepair / `original-023`. Missing scores are preserved as `null` and excluded from available-case metric denominators, exactly as in the supplied exports. Their locations are included in the generated `summary.json` files.
 
 The verifier recomputes scores from the saved normalized output, using the corresponding reference and instruction. It checks both values and denominators. It does not substitute a new output for an invalid historical response. A missing-as-failure sensitivity analysis would require a separate explicitly labelled calculation.
 
@@ -25,9 +25,7 @@ Only rows belonging to SemanticRepair are used for paired comparisons. Both init
 
 ## Latency
 
-End-to-end latency uses individual recorded observations. Mean, median and P95 are recomputed for each model, method and request group. P95 uses linear interpolation between adjacent sorted observations. The pooled 335-request figures recompute from all observations; they do not average the two cohorts' means or percentiles without weighting.
-
-Extended SemanticRepair end-to-end latency is the shared LocalIntent execution plus the additional repair execution. Deterministic checking and editing costs remain included even when repair makes no additional model call.
+End-to-end latency uses individual recorded observations. Mean, median and P95 are recomputed for each model, method and request group. P95 uses linear interpolation between adjacent sorted observations.
 
 Stage-level plots use recorded model-call durations. Generic routing and generation and repair-initial durations are averaged over the whole applicable cohort. The repair-model stage is averaged only over scenarios with an actual additional model call, including rejected candidates. A missing call gives an undefined conditional mean, shown as “No call,” not a zero-second bar. Stage means have different denominators and should not be added as an end-to-end estimate.
 
